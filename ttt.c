@@ -1,16 +1,14 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 void init_damier(char damier[9])
 {
 	int i;
 	for(i = 0; i<9; i++)
-		damier[i]=' ';
+		damier[i]= i+49;
 }
-void print_help()
-{
-	printf("| 7 | 8 | 9 |\n|---|---|---|\n| 4 | 5 | 6 |\n|---|---|---|\n| 1 | 2 | 3 |\n");
-}
+
 void affiche_damier(char damier[9])
 {
 	printf("|---|---|---|\n");
@@ -37,7 +35,7 @@ void jouer(char damier[9], int joueur, int *tour)
 		{
 			printf("erreur valeurs\n");
 		}
-		else if(damier[y] != ' ')
+		else if(damier[y] == 'X' || damier[y] == 'O')
 		{
 			printf("case déjà occupée\n");
 		}
@@ -55,17 +53,18 @@ void jouer(char damier[9], int joueur, int *tour)
 int gagner(char damier[9])
 {
 
-	if(damier[0] != ' ' && damier[4] == damier[0] &&  damier[0]==damier[8])
+	if(damier[4] == damier[0] && damier[0]==damier[8])
 		return 1;
-	if(damier[2] != ' ' && damier[4] == damier[2] &&  damier[2]==damier[6])
+	if(damier[4] == damier[2] && damier[2]==damier[6])
 		return 1;
 	for(int i = 0; i<3;i++)
 	{
-		if(damier[0+i]!= ' ' && damier[i] == damier[3+i] &&  damier[i]==damier[i+6])//colonne
+		if(damier[i] == damier[3+i] && damier[i]==damier[i+6])//colonne
 			return 1;
-		if(damier[0+3*i]!= ' ' &&  damier[0+3*i] == damier[1+3*i] &&  damier[0+3*i]==damier[2+3*i])//ligne
-			return 1; 
+		if(damier[0+3*i] == damier[1+3*i] && damier[0+3*i]==damier[2+3*i])//ligne
+			return 1;
 	}
+	return 0;
 }
 
 int main(void){
@@ -75,15 +74,13 @@ int main(void){
 	int fin = 0;
 	int tour = 0;
 	system("clear");
-	print_help();
-	affiche_damier(damier);	
+	affiche_damier(damier);
 	while(fin == 0)
 	{
 		jouer(damier, joueur, &tour);
 		system("clear");
-		print_help();
 		affiche_damier(damier);
-		if(gagner(damier) == 1) 
+		if(gagner(damier) == 1)
 		{
 			fin = 1;
 			printf("joueur %d a gagné !!!\n", joueur);
@@ -93,7 +90,7 @@ int main(void){
 			fin = 1;
 			printf("match nul");
 		}
-		joueur = (joueur == 1) ? 2 : 1;	
+		joueur = (joueur == 1) ? 2 : 1;
 		
 	}
 	return 0;
