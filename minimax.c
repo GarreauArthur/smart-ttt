@@ -27,7 +27,7 @@ void affiche_damier(char damier[9])
 	printf("|\n|---|---|---|\n");
 }
 
-void jouer(char damier[9], int joueur, int *tour)
+void jouer(char damier[9], int joueur)
 {
 	int y, ok = 0;
 	while(ok == 0)
@@ -51,7 +51,6 @@ void jouer(char damier[9], int joueur, int *tour)
 			ok = 1;
 		}
 	}
-	(*tour)++;
 }
 
 int gagner(char damier[9])
@@ -97,7 +96,7 @@ int minimax(char damier[9], int joueur)
 		{
 			char sym;
 			int p;
-			if(joueur == H_PLAYER)
+			if(joueur == C_PLAYER)
 			{
 				sym =  H_SYMBOLE;
 				p = C_PLAYER; 
@@ -131,7 +130,7 @@ void coupOrdi(char damier[9])
 		{
 			damier[i] = C_SYMBOLE;
 			//on calcule le meilleur score envisageable
-			int tempScore = minimax(damier,H_PLAYER);
+			int tempScore = minimax(damier,C_PLAYER);
 			//on remet la grille dans son état d'origine pour
 			// tester les autres coups
 			damier[i] = i + 49;
@@ -143,7 +142,7 @@ void coupOrdi(char damier[9])
 		}
 	}
 	// on joue le meilleur coup
-	damier[coup];
+	damier[coup] = C_SYMBOLE;
 }
 
 int main(void){
@@ -156,7 +155,11 @@ int main(void){
 	affiche_damier(damier);
 	while(fin == 0)
 	{
-		jouer(damier, joueur, &tour);
+		if(joueur == H_PLAYER)
+			jouer(damier, joueur);
+		else
+			coupOrdi(damier);
+		tour++;
 		system("clear");
 		affiche_damier(damier);
 		if(gagner(damier) == 1)
@@ -169,7 +172,7 @@ int main(void){
 			fin = 1;
 			printf("match nul");
 		}
-		joueur = (joueur == 1) ? 2 : 1;
+		joueur = (joueur == H_PLAYER) ? C_PLAYER : H_PLAYER;
 		
 	}
 	return 0;
