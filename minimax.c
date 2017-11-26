@@ -1,6 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#define C_PLAYER 0
+#define H_PLAYER 1
+#define C_SYMBOLE 'X'
+#define H_SYMBOLE 'O'
 
 void init_damier(char damier[9])
 {
@@ -41,9 +45,9 @@ void jouer(char damier[9], int joueur, int *tour)
 		}
 		else
 		{
-			if(joueur == 1)
-			damier[y] = 'X';
-			else damier[y] = 'O';
+			if(joueur == H_PLAYER)
+			damier[y] = H_SYMBOLE;
+			else damier[y] = C_SYMBOLE;
 			ok = 1;
 		}
 	}
@@ -71,11 +75,75 @@ int gagner(char damier[9])
 
 int score(char damier[9], int joueur)
 {
-	if(joueur == 0 && gagner(damier))
+	if(joueur == C_PLAYER && gagner(damier))
 		return 10;
-	if(joueur == 1 && gagner(damier))
+	if(joueur == H_PLAYER && gagner(damier))
 		return -10;
 	return 0;
+}
+
+int minimax(char damier[9], int joueur)
+{
+	// si la partie est finie, on retourne le score
+	int gagne = score(damier,joueur);
+	if(gagne != 0)
+		return gagne;	
+	// si la partie n'est pas finie, on joue de nouveau coup
+	int score = -1;
+	int coup = -1;
+	for(int i = 0; i<9; i++)
+	{
+		if(damier[i] != C_SYMBOLE && damier[i] != H_SYMBOLE)
+		{
+			char sym;
+			int p;
+			if(joueur == H_PLAYER)
+			{
+				sym =  H_SYMBOLE;
+				p = C_PLAYER; 
+			}
+			else{
+				sym = C_SYMBOLE;
+				p = H_PLAYER;
+			}
+			damier[i] = sym;	
+			int tempScore = minimax(damier, p);
+			if(tempScore > score){
+				score = tempScore;
+				coup = i;
+			}
+			damier[i] = i+49;	
+		}
+	}
+	if(coup == -1) return 0;
+	return score;
+}
+
+void coupOrdi(char damier[9])
+{
+	int coup = -1;
+	int score = -1;
+	// on parcourt toute la grille
+	for(int i = 0; i<9;i++)
+	{
+		// si la case est vide
+		if(damier[i] != C_SYMBOLE && damier[i] != H_SYMBOLE)
+		{
+			damier[i] = C_SYMBOLE;
+			//on calcule le meilleur score envisageable
+			int tempScore = minimax(damier,H_PLAYER);
+			//on remet la grille dans son état d'origine pour
+			// tester les autres coups
+			damier[i] = i + 49;
+			if(score < tempScore)// si on a un meilleur coup
+			{
+				score = tempScore;
+				coup = i;
+			}
+		}
+	}
+	// on joue le meilleur coup
+	damier[coup];
 }
 
 int main(void){
