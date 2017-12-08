@@ -126,45 +126,6 @@ int minimax(char damier[9], int joueur)
 	return score;
 }
 
-
-
-
-/*
-	// si la partie est finie, on retourne le score
-	int gagne = score(damier,joueur);
-	if(gagne != 0)
-		return gagne;	
-	// si la partie n'est pas finie, on joue de nouveau coup
-	int score = -1;
-	int coup = -1;
-	for(int i = 0; i<9; i++)
-	{
-		if(damier[i] != C_SYMBOLE && damier[i] != H_SYMBOLE)
-		{
-			char sym;
-			int p;
-			if(joueur == C_PLAYER)
-			{
-				sym =  H_SYMBOLE;
-				p = H_PLAYER; 
-			}
-			else{
-				sym = C_SYMBOLE;
-				p = C_PLAYER;
-			}
-			damier[i] = sym;	
-			int tempScore = -minimax(damier, p);
-			if(tempScore > score){
-				score = tempScore;
-				coup = i;
-			}
-			damier[i] = i+49;	
-		}
-	}
-	if(coup == -1) return 0;
-	return score;
-}
-*/
 int coupOrdi(char damier[9])
 {
 	int score = -20;
