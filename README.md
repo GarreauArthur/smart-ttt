@@ -15,6 +15,16 @@ overkill for the ttt.
 So I am just going to use different techniques to solve this problem. I am just
 trying to learn stuff.
 
+## Minimax
+
+Minimax 1.0.0 is done and works fine.
+Minimax.c implements the minimax algorithm, you can try it, but you will never
+be able to win.
+
+### alpha-beta
+
+TODO : implement alpha-beta to optimize the algorithm.
+
 ## Bibliography
 
 * <https://neverstopbuilding-dropblog.herokuapp.com/minimax>
