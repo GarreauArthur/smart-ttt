@@ -87,10 +87,10 @@ int finJeu(char damier[9])
 	return 0;
 }
 
-int minimax(char damier[9], int joueur, int first)
+int minimax(char damier[9], int joueur)
 {
 
-	int score = -1;
+	int score = -20;
 	int coup = -1;
 	for(int i = 0; i<9; i++)
 	{
@@ -113,15 +113,16 @@ int minimax(char damier[9], int joueur, int first)
 				// si adv gagne 10 => on récupère -10
 				// si match nul => on récupère 0
 				int joueurSuivant = (joueur == C_PLAYER ? H_PLAYER : C_PLAYER);
-				int scoretmp = -minimax(damier,joueurSuivant,0);
+				int scoretmp = -minimax(damier,joueurSuivant);
 				if(score < scoretmp)
+				{
 					coup = i;
+					score = scoretmp;
+				}
 				damier[i] = i+49;
 			}
 		}
 	}
-	if(first == 1)
-	damier[coup] = (joueur == C_PLAYER ? C_SYMBOLE : H_SYMBOLE);
 	return score;
 }
 
@@ -163,96 +164,78 @@ int minimax(char damier[9], int joueur, int first)
 	if(coup == -1) return 0;
 	return score;
 }
-
-void coupOrdi(char damier[9])
+*/
+int coupOrdi(char damier[9])
 {
+	int score = -20;
 	int coup = -1;
-	int score = -1;
-	// on parcourt toute la grille
-	for(int i = 0; i<9;i++)
+	for(int i = 0; i<9; i++)
 	{
-		// si la case est vide
 		if(damier[i] != C_SYMBOLE && damier[i] != H_SYMBOLE)
 		{
+			// le joueur joue
 			damier[i] = C_SYMBOLE;
-			//on calcule le meilleur score envisageable
-			int tempScore = -minimax(damier,C_PLAYER);
-			//on remet la grille dans son état d'origine pour
-			// tester les autres coups
-			damier[i] = i + 49;
-			if(score < tempScore)// si on a un meilleur coup
+			// fin du game ?
+			int scorefinal = finJeu(damier);
+			if(scorefinal != -1)
 			{
-				score = tempScore;
-				coup = i;
+				// win : 10, draw : 0, on vient de joueur, on ne peut pas perdre
+				return scorefinal;
+			}
+			else // coup suivant
+			{
+				//on recupère l'inverse du score de l'adversaire
+				// si adv perd -10 => on récupère 10
+				// si adv gagne 10 => on récupère -10
+				// si match nul => on récupère 0
+				int scoretmp = -minimax(damier,H_PLAYER);
+				if(score < scoretmp)
+				{
+					coup = i;
+					score = scoretmp;
+				}
+				damier[i] = i+49;
 			}
 		}
 	}
-	if(coup == -1)
-	{
-		for(int i = 0; i<9;i++)
-		{
-			// si la case est vide
-			if(damier[i] != C_SYMBOLE && damier[i] != H_SYMBOLE)
-			{
-				coup = i;
-				i = 9;
-			}
-		}
-		
-	}
-	// on joue le meilleur coup
 	damier[coup] = C_SYMBOLE;
+	return score;
 }
-*/
+
 int main(void){
 	char damier[9];
 	init_damier(damier);
 	int joueur = 1;
 	int fin = 0;
-	int tour = 0;
+	int gagne = -1;
 	system("clear");
 	affiche_damier(damier);
-	printf("who's starting ? 0 : computer, 1 : you");
+	printf("who's starting ?\n0 : computer\n1 : you\n");
 	scanf("%d",&joueur);
 	while(fin == 0)
 	{
 		if(joueur == H_PLAYER)
 			jouer(damier, joueur);
 		else
-			minimax(damier,joueur,1);//coupOrdi(damier);
-		tour++;
+			coupOrdi(damier);
 		system("clear");
 		affiche_damier(damier);
-		if(gagner(damier) == 1)
+		gagne = finJeu(damier);
+		if(gagne == 10)
 		{
 			fin = 1;
-			printf("joueur %d a gagné !!!\n", joueur);
+			if(joueur == H_PLAYER)
+				printf("Bravo, vous avez gagné\n");
+			else
+				printf("Dommage, vous avez perdu\n");
 		}
-		else if(tour == 9)
+		else if(gagne == 0)
 		{
 			fin = 1;
-			printf("match nul");
+			printf("match nul\n");
 		}
-		joueur = (joueur == H_PLAYER) ? C_PLAYER : H_PLAYER;
-		
+		else
+			joueur = (joueur == H_PLAYER) ? C_PLAYER : H_PLAYER;
 	}
 	return 0;
 }
-
-
-
-
-
-
-
-/******
-
-111000000 : ligne >> 3
-000111000
-000000111
-100010001 : diagonale
-001010100
-100100100 : colone >>
-010010010
-001001001
-****/
