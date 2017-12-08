@@ -57,32 +57,78 @@ int gagner(char damier[9])
 {
 
 	if(damier[4] == damier[0] && damier[0]==damier[8])
-		return 1;
+		return 10;
 	if(damier[4] == damier[2] && damier[2]==damier[6])
-		return 1;
+		return 10;
 	for(int i = 0; i<3;i++)
 	{
 		if(damier[i] == damier[3+i] && damier[i]==damier[i+6])//colonne
-			return 1;
+			return 10;
 		if(damier[0+3*i] == damier[1+3*i] && damier[0+3*i]==damier[2+3*i])//ligne
-			return 1;
+			return 10;
 	}
 	return 0;
 }
 
-
-
-int score(char damier[9], int joueur)
+int finJeu(char damier[9])
 {
-	if(joueur == C_PLAYER && gagner(damier))
+	if(gagner(damier) == 10)
 		return 10;
-	if(joueur == H_PLAYER && gagner(damier))
-		return -10;
+	else
+	{
+		for(int i = 0; i<9; i++)
+		{
+			if(damier[i] != C_SYMBOLE && damier[i] != H_SYMBOLE)
+			{
+				return -1;
+			}
+		}
+	}
 	return 0;
 }
 
-int minimax(char damier[9], int joueur)
+int minimax(char damier[9], int joueur, int first)
 {
+
+	int score = -1;
+	int coup = -1;
+	for(int i = 0; i<9; i++)
+	{
+		if(damier[i] != C_SYMBOLE && damier[i] != H_SYMBOLE)
+		{
+			// le joueur joue
+			damier[i] = (joueur == C_PLAYER ? C_SYMBOLE : H_SYMBOLE);
+			// fin du game ?
+			int scorefinal = finJeu(damier);
+			if(scorefinal != -1)
+			{
+				// win : 10, draw : 0, on vient de joueur, on ne peut pas perdre
+				damier[i] = i+49;
+				return scorefinal;
+			}
+			else // coup suivant
+			{
+				//on recupère l'inverse du score de l'adversaire
+				// si adv perd -10 => on récupère 10
+				// si adv gagne 10 => on récupère -10
+				// si match nul => on récupère 0
+				int joueurSuivant = (joueur == C_PLAYER ? H_PLAYER : C_PLAYER);
+				int scoretmp = -minimax(damier,joueurSuivant,0);
+				if(score < scoretmp)
+					coup = i;
+				damier[i] = i+49;
+			}
+		}
+	}
+	if(first == 1)
+	damier[coup] = (joueur == C_PLAYER ? C_SYMBOLE : H_SYMBOLE);
+	return score;
+}
+
+
+
+
+/*
 	// si la partie est finie, on retourne le score
 	int gagne = score(damier,joueur);
 	if(gagne != 0)
@@ -157,7 +203,7 @@ void coupOrdi(char damier[9])
 	// on joue le meilleur coup
 	damier[coup] = C_SYMBOLE;
 }
-
+*/
 int main(void){
 	char damier[9];
 	init_damier(damier);
@@ -173,7 +219,7 @@ int main(void){
 		if(joueur == H_PLAYER)
 			jouer(damier, joueur);
 		else
-			coupOrdi(damier);
+			minimax(damier,joueur,1);//coupOrdi(damier);
 		tour++;
 		system("clear");
 		affiche_damier(damier);
