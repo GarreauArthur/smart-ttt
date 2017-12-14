@@ -7,6 +7,19 @@
 #define H_SYMBOLE 'O'
 #define NB_STATES_MAX 362880
 
+//-----------------------------------------------
+// GLOBAL VARIABLES AND STRUCTURES
+typedef struct{
+	char states[10];
+	float value;
+} State;
+
+
+State states[NB_STATES_MAX];//will contains all the states
+int nbStates = 0;//number of states discovered
+
+//-----------------------------------------------
+
 void init_damier(char damier[9])
 {
 	int i;
