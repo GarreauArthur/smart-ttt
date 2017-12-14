@@ -7,7 +7,7 @@
 #define H_SYMBOLE 'O'
 #define NB_STATES_MAX 362880
 
-//-----------------------------------------------
+//------------------------------------------------------------------------------
 // GLOBAL VARIABLES AND STRUCTURES
 typedef struct{
 	char states[10];
@@ -18,7 +18,7 @@ typedef struct{
 State states[NB_STATES_MAX];//will contains all the states
 int nbStates = 0;//number of states discovered
 
-//-----------------------------------------------
+//------------------------------------------------------------------------------
 
 void init_damier(char damier[9])
 {
@@ -107,6 +107,20 @@ int coupOrdi(char damier[9])
 
 	return score;
 }
+//------------------------------------------------------------------------------
+//temporal diff
+
+/*
+ * Transform the current state of the board into a string
+ */
+void toString(char damier[9], char state[10]){
+	for(int i = 0; i<9;i++)
+		state[i] = damier[i];
+	state[9]='\0';
+}
+
+//------------------------------------------------------------------------------
+//MAIN
 
 int main(void){
 	char damier[9];
