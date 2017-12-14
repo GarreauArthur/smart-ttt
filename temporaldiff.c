@@ -10,13 +10,13 @@
 //------------------------------------------------------------------------------
 // GLOBAL VARIABLES AND STRUCTURES
 typedef struct{
-	char states[10];
+	char state[10];
 	float value;
 } State;
 
 
-State states[NB_STATES_MAX];//will contains all the states
-int nbStates = 0;//number of states discovered
+State G_states[NB_STATES_MAX];//will contains all the states
+int G_nbStates = 0;//number of states discovered
 
 //------------------------------------------------------------------------------
 
@@ -119,6 +119,32 @@ void toString(char damier[9], char state[10]){
 	state[9]='\0';
 }
 
+
+void updateValue(damier)
+{
+	int found = 0;
+	char state[10];
+	toString(damier,state);
+	for(int i = 0; i < G_nbStates; i++)
+	{
+		if(strcmp(state,G_states[i].state) == 0)
+		{
+			found = 1;
+			break;
+		}
+	}
+	if(found == 0)//si nouvel état
+	{
+		Sate s;//State * s = (State *)malloc(sizeof(State)); if(s==NULL)exit(1);
+		s.state = state;
+		s.value = 0.5;
+	}
+	else//sinon
+	{
+		//V(s) <- V(s) + alpha.[V(s')-V(s)]
+	}
+
+}
 //------------------------------------------------------------------------------
 //MAIN
 
